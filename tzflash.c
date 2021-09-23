@@ -39,7 +39,7 @@ static int gMid = -1;
 
 // TZFlashLoad 模块载入
 // pageSize是flash页大小,alignNum是字节对齐数
-void TZFlashLoad(int pageSize, int alignNum, TZFlashEraseFunc eraseFunc, 
+bool TZFlashLoad(int pageSize, int alignNum, TZFlashEraseFunc eraseFunc, 
     TZFlashWriteFunc writeFunc, TZFlashReadFunc readFunc) {
     gInterface.pageSize = pageSize;
     gInterface.alignNum = alignNum;
@@ -48,6 +48,10 @@ void TZFlashLoad(int pageSize, int alignNum, TZFlashEraseFunc eraseFunc,
     gInterface.read = readFunc;
 
     gMid = TZMallocRegister(0, TZFALSH_MALLOC_TAG, TZFLASH_MALLOC_TOTAL);
+    if (gMid == -1) {
+        return false;
+    }
+    return true;
 }
 
 // TZFlashOpen 打开flash文件.
@@ -125,15 +129,6 @@ int TZFlashRead(intptr_t fd, uint8_t* bytes, int size) {
     gInterface.read(file->offset, bytes, readSize);
     file->offset += (uint32_t)readSize;
     return readSize;
-}
-
-// TZFlashClose 关闭
-void TZFlashClose(intptr_t fd) {
-    tFlashFile* file = (tFlashFile*)fd;
-    if (file->mode != TZFLASH_READ_ONLY && file->cacheLen > 0) {
-        gInterface.write(file->offset, file->cache, (int)file->cacheLen);
-    }
-    TZFree(file);
 }
 
 // TZFlashClose 关闭.关闭时会讲所有数据写入到flash,如果不满足对齐,则会在最后补0

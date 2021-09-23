@@ -36,7 +36,7 @@ typedef enum {
 
 // TZFlashLoad 模块载入
 // pageSize是flash页大小,alignNum是字节对齐数
-void TZFlashLoad(int pageSize, int alignNum, TZFlashEraseFunc eraseFunc, 
+bool TZFlashLoad(int pageSize, int alignNum, TZFlashEraseFunc eraseFunc, 
     TZFlashWriteFunc writeFunc, TZFlashReadFunc readFunc);
 
 // TZFlashOpen 打开flash文件.
