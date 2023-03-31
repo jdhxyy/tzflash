@@ -1,5 +1,5 @@
 // Copyright 2019-2021 The jdh99 Authors. All rights reserved.
-// flash¹ÜÀíÄ£¿é
+// flashç®¡ç†æ¨¡å—
 // Authors: jdh99 <jdh821@163.com>
 
 #ifndef TZFLASH_H
@@ -8,67 +8,67 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-// tzmalloc±êÇ©ºÍ×Ö½ÚÊı
+// tzmallocæ ‡ç­¾å’Œå­—èŠ‚æ•°
 #define TZFALSH_MALLOC_TAG "tzflash"
 #define TZFLASH_MALLOC_TOTAL 4096
 
-// TZFlashEraseFunc º¯ÊıÀàĞÍ:²Á³ıflash
-// addr:ÆğÊ¼µØÖ·.size:²Á³ı×Ö½ÚÊı
-// ³É¹¦·µ»Øtrue,Ê§°Ü·µ»Øfalse
+// TZFlashEraseFunc å‡½æ•°ç±»å‹:æ“¦é™¤flash
+// addr:èµ·å§‹åœ°å€.size:æ“¦é™¤å­—èŠ‚æ•°
+// æˆåŠŸè¿”å›true,å¤±è´¥è¿”å›false
 typedef bool (*TZFlashEraseFunc)(uint32_t addr, int size);
 
-// TZFlashWriteFunc º¯ÊıÀàĞÍ:Ğ´Èëflash
-// addr:ÆğÊ¼µØÖ·.bytes:´ıĞ´ÈëµÄ×Ö½ÚÁ÷.size:Ğ´Èë×Ö½ÚÊı
-// ³É¹¦·µ»Øtrue,Ê§°Ü·µ»Øfalse
+// TZFlashWriteFunc å‡½æ•°ç±»å‹:å†™å…¥flash
+// addr:èµ·å§‹åœ°å€.bytes:å¾…å†™å…¥çš„å­—èŠ‚æµ.size:å†™å…¥å­—èŠ‚æ•°
+// æˆåŠŸè¿”å›true,å¤±è´¥è¿”å›false
 typedef bool (*TZFlashWriteFunc)(uint32_t addr, uint8_t* bytes, int size);
 
-// TZFlashReadFunc º¯ÊıÀàĞÍ:¶ÁÈ¡flash
-// addr:ÆğÊ¼µØÖ·.bytes:¶ÁÈ¡µÄ×Ö½ÚÁ÷´æ·ÅµÄ»º´æ.size:¶ÁÈ¡µÄ×Ö½ÚÊı
-// ³É¹¦·µ»Øtrue,Ê§°Ü·µ»Øfalse
+// TZFlashReadFunc å‡½æ•°ç±»å‹:è¯»å–flash
+// addr:èµ·å§‹åœ°å€.bytes:è¯»å–çš„å­—èŠ‚æµå­˜æ”¾çš„ç¼“å­˜.size:è¯»å–çš„å­—èŠ‚æ•°
+// æˆåŠŸè¿”å›true,å¤±è´¥è¿”å›false
 typedef bool (*TZFlashReadFunc)(uint32_t addr, uint8_t* bytes, int size);
 
-// TZFlashOpenMode ´ò¿ªÄ£Ê½
+// TZFlashOpenMode æ‰“å¼€æ¨¡å¼
 typedef enum {
     TZFLASH_READ_ONLY = 0,
     TZFLASH_WRITE_ONLY,
     TZFLASH_READ_AND_WRITE
 } TZFlashOpenMode;
 
-// TZFlashLoad Ä£¿éÔØÈë
-// pageSizeÊÇflashÒ³´óĞ¡,alignNumÊÇ×Ö½Ú¶ÔÆëÊı
+// TZFlashLoad æ¨¡å—è½½å…¥
+// pageSizeæ˜¯flashé¡µå¤§å°,alignNumæ˜¯å­—èŠ‚å¯¹é½æ•°
 bool TZFlashLoad(int pageSize, int alignNum, TZFlashEraseFunc eraseFunc, 
     TZFlashWriteFunc writeFunc, TZFlashReadFunc readFunc);
 
-// TZFlashOpen ´ò¿ªflashÎÄ¼ş.
-// ×¢Òâ:´ò¿ªÊ±»á²Á³ıflash.Òª±£Ö¤´ò¿ªµÄflash´óĞ¡ÊÇÒ³µÄÕûÊı±¶,·ñÔò»á´ò¿ªÊ§°Ü
-// ·µ»ØÖµÎª0±íÊ¾´ò¿ªÊ§°Ü
+// TZFlashOpen æ‰“å¼€flashæ–‡ä»¶.
+// æ³¨æ„:æ‰“å¼€æ—¶ä¼šæ“¦é™¤flash.è¦ä¿è¯æ‰“å¼€çš„flashå¤§å°æ˜¯é¡µçš„æ•´æ•°å€,å¦åˆ™ä¼šæ‰“å¼€å¤±è´¥
+// è¿”å›å€¼ä¸º0è¡¨ç¤ºæ‰“å¼€å¤±è´¥
 intptr_t TZFlashOpen(uint32_t addrStart, int size, TZFlashOpenMode mode);
 
-// TZFlashWrite ÏòflashĞ´ÈëÊı¾İ
-// ³É¹¦·µ»ØĞ´ÈëµÄ×Ö½ÚÊı,Ê§°Ü·µ»Ø-1
+// TZFlashWrite å‘flashå†™å…¥æ•°æ®
+// æˆåŠŸè¿”å›å†™å…¥çš„å­—èŠ‚æ•°,å¤±è´¥è¿”å›-1
 int TZFlashWrite(intptr_t fd, uint8_t* bytes, int size);
 
-// TZFlashRead ´ÓflashÖĞ¶ÁÈ¡Êı¾İ
-// ³É¹¦·µ»Ø¶ÁÈ¡µÄ×Ö½ÚÊı,Ê§°Ü·µ»Ø-1
+// TZFlashRead ä»flashä¸­è¯»å–æ•°æ®
+// æˆåŠŸè¿”å›è¯»å–çš„å­—èŠ‚æ•°,å¤±è´¥è¿”å›-1
 int TZFlashRead(intptr_t fd, uint8_t* bytes, int size);
 
-// TZFlashClose ¹Ø±Õ.¹Ø±ÕÊ±»á½²ËùÓĞÊı¾İĞ´Èëµ½flash,Èç¹û²»Âú×ã¶ÔÆë,Ôò»áÔÚ×îºó²¹0
+// TZFlashClose å…³é—­.å…³é—­æ—¶ä¼šè®²æ‰€æœ‰æ•°æ®å†™å…¥åˆ°flash,å¦‚æœä¸æ»¡è¶³å¯¹é½,åˆ™ä¼šåœ¨æœ€åè¡¥0
 void TZFlashClose(intptr_t fd);
 
-// TZFlashSeek ÉèÖÃÆ«ÒÆÁ¿
-// offsetÊÇÏà¶ÔÆğÊ¼µØÖ·µÄÆ«ÒÆÁ¿.×¢ÒâÈç¹ûÊÇĞ´ÈëÄ£Ê½,²»ÔÊĞíÖØ¶¨ÒåÆ«ÒÆÁ¿µ½ÒÑ¾­Ğ´¹ıµÄÇøÓò
+// TZFlashSeek è®¾ç½®åç§»é‡
+// offsetæ˜¯ç›¸å¯¹èµ·å§‹åœ°å€çš„åç§»é‡.æ³¨æ„å¦‚æœæ˜¯å†™å…¥æ¨¡å¼,ä¸å…è®¸é‡å®šä¹‰åç§»é‡åˆ°å·²ç»å†™è¿‡çš„åŒºåŸŸ
 bool TZFlashSeek(intptr_t fd, int offset);
 
-// TZFlashErase ²Á³ıflash
-// Ö»¶ÁÄ£Ê½ÏÂ²»¿ÉÒÔ²Á³ı
+// TZFlashErase æ“¦é™¤flash
+// åªè¯»æ¨¡å¼ä¸‹ä¸å¯ä»¥æ“¦é™¤
 bool TZFlashErase(intptr_t fd);
 
-// TZFlashGetOffset »ñÈ¡µ±Ç°Æ«ÒÆÁ¿
+// TZFlashGetOffset è·å–å½“å‰åç§»é‡
 int TZFlashGetOffset(intptr_t fd);
 
-// TZFlashSync ½«Î´Ğ´µ½´ÅÅÌµÄÊı¾İĞ´Èëµ½´ÅÅÌ
-// ×¢Òâ:»á¸ù¾İ×Ö½Ú¶ÔÆë´¦Àí
-// ´¦ÀíÂß¼­:Ò»°ãÊÇ4×Ö½Ú,ÔòĞ´ÈëµÄ×Ö½ÚÊıÊÇ4µÄ±¶Êı,Èç¹ûµ±Ç°»º´æÀï×Ö½ÚÊı²»ÊÇ4µÄ±¶Êı,»áÓĞÈô¸É×Ö½ÚÃ»ÓĞĞ´Èë
+// TZFlashSync å°†æœªå†™åˆ°ç£ç›˜çš„æ•°æ®å†™å…¥åˆ°ç£ç›˜
+// æ³¨æ„:ä¼šæ ¹æ®å­—èŠ‚å¯¹é½å¤„ç†
+// å¤„ç†é€»è¾‘:ä¸€èˆ¬æ˜¯4å­—èŠ‚,åˆ™å†™å…¥çš„å­—èŠ‚æ•°æ˜¯4çš„å€æ•°,å¦‚æœå½“å‰ç¼“å­˜é‡Œå­—èŠ‚æ•°ä¸æ˜¯4çš„å€æ•°,ä¼šæœ‰è‹¥å¹²å­—èŠ‚æ²¡æœ‰å†™å…¥
 void TZFlashSync(intptr_t fd);
 
 #endif

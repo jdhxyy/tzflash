@@ -1,5 +1,5 @@
 // Copyright 2019-2021 The jdh99 Authors. All rights reserved.
-// flash¹ÜÀíÄ£¿é
+// flashç®¡ç†æ¨¡å—
 // Authors: jdh99 <jdh821@163.com>
 
 #include "tzflash.h"
@@ -11,7 +11,7 @@
 
 #pragma pack(1)
 
-// tFlashInterface flash¹ÜÀí½Ó¿Ú
+// tFlashInterface flashç®¡ç†æ¥å£
 typedef struct {
     int pageSize;
     int alignNum;
@@ -20,7 +20,7 @@ typedef struct {
     TZFlashReadFunc read;
 } tFlashInterface;
 
-// tFlashFile flashÎÄ¼şÀàĞÍ
+// tFlashFile flashæ–‡ä»¶ç±»å‹
 typedef struct {
     uint32_t addrStart;
     uint32_t addrStop;
@@ -34,11 +34,11 @@ typedef struct {
 
 static tFlashInterface gInterface;
 
-// tzmallocÓÃ»§id
+// tzmallocç”¨æˆ·id
 static int gMid = -1;
 
-// TZFlashLoad Ä£¿éÔØÈë
-// pageSizeÊÇflashÒ³´óĞ¡,alignNumÊÇ×Ö½Ú¶ÔÆëÊı
+// TZFlashLoad æ¨¡å—è½½å…¥
+// pageSizeæ˜¯flashé¡µå¤§å°,alignNumæ˜¯å­—èŠ‚å¯¹é½æ•°
 bool TZFlashLoad(int pageSize, int alignNum, TZFlashEraseFunc eraseFunc, 
     TZFlashWriteFunc writeFunc, TZFlashReadFunc readFunc) {
     gInterface.pageSize = pageSize;
@@ -54,9 +54,9 @@ bool TZFlashLoad(int pageSize, int alignNum, TZFlashEraseFunc eraseFunc,
     return true;
 }
 
-// TZFlashOpen ´ò¿ªflashÎÄ¼ş.
-// ×¢Òâ:Ö»Ğ´Ä£Ê½´ò¿ªÊ±»á²Á³ıflash.Òª±£Ö¤´ò¿ªµÄflash´óĞ¡ÊÇÒ³µÄÕûÊı±¶,·ñÔò»á´ò¿ªÊ§°Ü
-// ·µ»ØÖµÎª0±íÊ¾´ò¿ªÊ§°Ü
+// TZFlashOpen æ‰“å¼€flashæ–‡ä»¶.
+// æ³¨æ„:åªå†™æ¨¡å¼æ‰“å¼€æ—¶ä¼šæ“¦é™¤flash.è¦ä¿è¯æ‰“å¼€çš„flashå¤§å°æ˜¯é¡µçš„æ•´æ•°å€,å¦åˆ™ä¼šæ‰“å¼€å¤±è´¥
+// è¿”å›å€¼ä¸º0è¡¨ç¤ºæ‰“å¼€å¤±è´¥
 intptr_t TZFlashOpen(uint32_t addrStart, int size, TZFlashOpenMode mode) {
     if (mode == TZFLASH_WRITE_ONLY) {
         if (size % gInterface.pageSize != 0) {
@@ -79,8 +79,8 @@ intptr_t TZFlashOpen(uint32_t addrStart, int size, TZFlashOpenMode mode) {
     return (intptr_t)file;
 }
 
-// TZFlashWrite ÏòflashĞ´ÈëÊı¾İ
-// ³É¹¦·µ»ØĞ´ÈëµÄ×Ö½ÚÊı,Ê§°Ü·µ»Ø-1
+// TZFlashWrite å‘flashå†™å…¥æ•°æ®
+// æˆåŠŸè¿”å›å†™å…¥çš„å­—èŠ‚æ•°,å¤±è´¥è¿”å›-1
 int TZFlashWrite(intptr_t fd, uint8_t* bytes, int size) {
     tFlashFile* file = (tFlashFile*)fd;
     if (file->mode == TZFLASH_READ_ONLY) {
@@ -94,7 +94,7 @@ int TZFlashWrite(intptr_t fd, uint8_t* bytes, int size) {
     int writeNum = 0;
     for (;;) {
         delta = CACHE_SIZE - (int)file->cacheLen;
-        // ±Ècache¿ÉĞ´Èë¿Õ¼äĞ¡ÔòÖ±½ÓĞ´Èë
+        // æ¯”cacheå¯å†™å…¥ç©ºé—´å°åˆ™ç›´æ¥å†™å…¥
         if (size < delta) {
             memcpy(file->cache + file->cacheLen, bytes + writeNum, (size_t)size);
             file->cacheLen += (uint32_t)size;
@@ -102,7 +102,7 @@ int TZFlashWrite(intptr_t fd, uint8_t* bytes, int size) {
             break;
         }
 
-        // Ğ´Âúcache,ÔÙÈ«²¿Ğ´Èëflash
+        // å†™æ»¡cache,å†å…¨éƒ¨å†™å…¥flash
         memcpy(file->cache + file->cacheLen, bytes + writeNum, (size_t)delta);
         file->cacheLen += (uint32_t)delta;
         gInterface.write(file->offset, file->cache, (int)file->cacheLen);
@@ -114,8 +114,8 @@ int TZFlashWrite(intptr_t fd, uint8_t* bytes, int size) {
     return writeNum;
 }
 
-// TZFlashRead ´ÓflashÖĞ¶ÁÈ¡Êı¾İ
-// ³É¹¦·µ»Ø¶ÁÈ¡µÄ×Ö½ÚÊı,Ê§°Ü·µ»Ø-1
+// TZFlashRead ä»flashä¸­è¯»å–æ•°æ®
+// æˆåŠŸè¿”å›è¯»å–çš„å­—èŠ‚æ•°,å¤±è´¥è¿”å›-1
 int TZFlashRead(intptr_t fd, uint8_t* bytes, int size) {
     tFlashFile* file = (tFlashFile*)fd;
     if (file->mode == TZFLASH_WRITE_ONLY) {
@@ -131,7 +131,7 @@ int TZFlashRead(intptr_t fd, uint8_t* bytes, int size) {
     return readSize;
 }
 
-// TZFlashClose ¹Ø±Õ.¹Ø±ÕÊ±»á½²ËùÓĞÊı¾İĞ´Èëµ½flash,Èç¹û²»Âú×ã¶ÔÆë,Ôò»áÔÚ×îºó²¹0
+// TZFlashClose å…³é—­.å…³é—­æ—¶ä¼šè®²æ‰€æœ‰æ•°æ®å†™å…¥åˆ°flash,å¦‚æœä¸æ»¡è¶³å¯¹é½,åˆ™ä¼šåœ¨æœ€åè¡¥0
 void TZFlashClose(intptr_t fd) {
     tFlashFile* file = (tFlashFile*)fd;
     if (file->mode != TZFLASH_READ_ONLY && file->cacheLen > 0) {
@@ -150,8 +150,8 @@ void TZFlashClose(intptr_t fd) {
     TZFree(file);
 }
 
-// TZFlashSeek ÉèÖÃÆ«ÒÆÁ¿
-// offsetÊÇÏà¶ÔÆğÊ¼µØÖ·µÄÆ«ÒÆÁ¿.×¢ÒâÈç¹ûÊÇĞ´ÈëÄ£Ê½,²»ÔÊĞíÖØ¶¨ÒåÆ«ÒÆÁ¿µ½ÒÑ¾­Ğ´¹ıµÄÇøÓò
+// TZFlashSeek è®¾ç½®åç§»é‡
+// offsetæ˜¯ç›¸å¯¹èµ·å§‹åœ°å€çš„åç§»é‡.æ³¨æ„å¦‚æœæ˜¯å†™å…¥æ¨¡å¼,ä¸å…è®¸é‡å®šä¹‰åç§»é‡åˆ°å·²ç»å†™è¿‡çš„åŒºåŸŸ
 bool TZFlashSeek(intptr_t fd, int offset) {
     tFlashFile* file = (tFlashFile*)fd;
     int newOffset = offset + (int)file->addrStart;
@@ -167,8 +167,8 @@ bool TZFlashSeek(intptr_t fd, int offset) {
     return true;
 }
 
-// TZFlashErase ²Á³ıflash
-// Ö»¶ÁÄ£Ê½ÏÂ²»¿ÉÒÔ²Á³ı
+// TZFlashErase æ“¦é™¤flash
+// åªè¯»æ¨¡å¼ä¸‹ä¸å¯ä»¥æ“¦é™¤
 bool TZFlashErase(intptr_t fd) {
     tFlashFile* file = (tFlashFile*)fd;
     if (file->mode == TZFLASH_READ_ONLY) {
@@ -182,15 +182,15 @@ bool TZFlashErase(intptr_t fd) {
     return gInterface.erase(file->addrStart, size);
 }
 
-// TZFlashGetOffset »ñÈ¡µ±Ç°Æ«ÒÆÁ¿
+// TZFlashGetOffset è·å–å½“å‰åç§»é‡
 int TZFlashGetOffset(intptr_t fd) {
     tFlashFile* file = (tFlashFile*)fd;
     return (int)(file->offset - file->addrStart);
 }
 
-// TZFlashSync ½«Î´Ğ´µ½´ÅÅÌµÄÊı¾İĞ´Èëµ½´ÅÅÌ
-// ×¢Òâ:»á¸ù¾İ×Ö½Ú¶ÔÆë´¦Àí
-// ´¦ÀíÂß¼­:Ò»°ãÊÇ4×Ö½Ú,ÔòĞ´ÈëµÄ×Ö½ÚÊıÊÇ4µÄ±¶Êı,Èç¹ûµ±Ç°»º´æÀï×Ö½ÚÊı²»ÊÇ4µÄ±¶Êı,»áÓĞÈô¸É×Ö½ÚÃ»ÓĞĞ´Èë
+// TZFlashSync å°†æœªå†™åˆ°ç£ç›˜çš„æ•°æ®å†™å…¥åˆ°ç£ç›˜
+// æ³¨æ„:ä¼šæ ¹æ®å­—èŠ‚å¯¹é½å¤„ç†
+// å¤„ç†é€»è¾‘:ä¸€èˆ¬æ˜¯4å­—èŠ‚,åˆ™å†™å…¥çš„å­—èŠ‚æ•°æ˜¯4çš„å€æ•°,å¦‚æœå½“å‰ç¼“å­˜é‡Œå­—èŠ‚æ•°ä¸æ˜¯4çš„å€æ•°,ä¼šæœ‰è‹¥å¹²å­—èŠ‚æ²¡æœ‰å†™å…¥
 void TZFlashSync(intptr_t fd) {
     tFlashFile* file = (tFlashFile*)fd;
     if (file->mode != TZFLASH_READ_ONLY && file->cacheLen > 0) {
